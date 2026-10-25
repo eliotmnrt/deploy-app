@@ -1,11 +1,10 @@
-cat > .github/workflows/vercel-deploy.yml << 'EOF'
 name: Vercel Deploy
 
 on:
   push:
-    branches: [ main ]
+    branches: [ master ]
   pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   deploy:
@@ -14,9 +13,9 @@ jobs:
     - uses: actions/checkout@v4
     
     - name: Deploy to Vercel
-      uses: amondnet/vercel-action@v25
-      with:
+      uses: amondnet/vercel-action@v42
+      with: 
         vercel-token: ${{ secrets.VERCEL_TOKEN }}
         vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
         vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
-        vercel-args: '--prod'
+        vercel-build: true
