@@ -1,0 +1,30 @@
+name: Multi-Environment Deploy
+
+on:
+  push:
+    branches:
+      - master
+      - staging
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    
+    - name: Determine environment
+      id: env
+      run: |
+        if [ "${{ github.ref }}" == "refs/heads/main" ]; then
+          echo "environment=production" >> $GITHUB_OUTPUT
+          echo "url= https://deploy-app-lac.vercel.app" >> $GITHUB_OUTPUT
+        else
+          echo "environment=staging" >> $GITHUB_OUTPUT
+          echo "url=https://vercel.com/eliotmnrt-6376s-projects/deploy-app/8m5dsmnqjeQfyBSHdsgBcRjLa5Pz" >> $GITHUB_OUTPUT
+        fi
+    
+    - name: Deploy to ${{ steps.env.outputs.environment }}
+      run: |
+        echo "Deploying to: ${{ steps.env.outputs.environment }}"
+        echo "URL: ${{ steps.env.outputs.url }}"
+        # Add actual deployment commands here
