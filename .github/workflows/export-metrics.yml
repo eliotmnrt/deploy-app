@@ -1,0 +1,23 @@
+name: Export Metrics
+
+on:
+  workflow_run:
+    workflows: ["*"]
+    types: [completed]
+
+jobs:
+  export:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Collect metrics
+      run: |
+        echo "{
+          \"workflow\": \"${{ github.event.workflow_run.name }}\",
+          \"status\": \"${{ github.event.workflow_run.conclusion }}\",
+          \"duration_ms\": $(($(date -d "${{ github.event.workflow_run.updated_at }}" +%s%3N) - $(date -d "${{ github.event.workflow_run.created_at }}" +%s%3N))),
+          \"commit\": \"${{ github.event.workflow_run.head_sha }}\",
+          \"actor\": \"${{ github.event.workflow_run.actor.login }}\",
+          \"timestamp\": \"${{ github.event.workflow_run.updated_at }}\"
+        }" > metrics.json
+        cat metrics.json
+        # Send to monitoring system (Datadog, New Relic, etc.)
